@@ -14,7 +14,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({type:'application/vnd.api+json'}));
 app.use(methodOverride());
 
-mongoose.connect("mongodb://localhost/iths");
+function mongoURL() {
+  var mongoAccessCredentials = (process.env.MONGO_USER ? process.env.MONGO_USER + ':' + process.env.MONGO_PASSWORD + '@' : '');
+  var mongoHost = process.env.MONGO_HOST || 'localhost';
+  var mongoDB = process.env.MONGO_DB || process.env.APP || 'iths';
+  var mongoPort = process.env.MONGO_PORT || '27017';
+  var mongoURL = 'mongodb://' + mongoAccessCredentials + mongoHost + ':' + mongoPort + '/' + mongoDB;
+
+  return process.env.MONGO_URL || process.env.MONGOHQ_URL || mongoURL;
+}
+
+mongoose.connect(mongoURL());
 
 var Article = app.article = restful.model('article', mongoose.Schema({
     title: String,

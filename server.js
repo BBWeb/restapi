@@ -43,6 +43,10 @@ Article
       res.send("Key: " + uuid.v4());
     }
   })
+  .before('get', enableCORS)
+  .before('post', enableCORS)
+  .before('put', enableCORS)
+  .before('delete', enableCORS)
   .before('get', ensureKey)
   .before('post', ensureKey)
   .before('put', ensureKey)
@@ -150,6 +154,13 @@ function ensureKey(req, res, next) {
   if(!req.query || !req.query.key) return res.send(404);
 
   next();
+}
+
+function enableCORS(req, res, next) {
+  res.header['Access-Control-Allow-Origin'] = '*';
+  res.header['Access-Control-Allow-Credentials'] = true;
+  res.header['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS';
+  res.header['Access-Control-Allow-Headers'] = 'Content-Type';
 }
 
 Article.register(app, '/articles');

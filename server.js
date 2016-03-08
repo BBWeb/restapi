@@ -161,6 +161,8 @@ function enableCORS(req, res, next) {
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 
+  if('OPTIONS' == req.method) return res.send(200);
+
   next();
 }
 

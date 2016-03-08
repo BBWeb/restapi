@@ -1,4 +1,5 @@
 var async = require('async'),
+    cors = require('cors'),
     express = require('express'),
     bodyParser = require('body-parser'),
     methodOverride = require('method-override'),
@@ -9,6 +10,7 @@ var async = require('async'),
     mongoose = restful.mongoose;
 var app = express();
 
+app.use(cors());
 app.use(bodyParser.urlencoded({'extended':'true'}));
 app.use(bodyParser.json());
 app.use(bodyParser.json({type:'application/vnd.api+json'}));
@@ -43,10 +45,6 @@ Article
       res.send("Key: " + uuid.v4());
     }
   })
-  .before('get', enableCORS)
-  .before('post', enableCORS)
-  .before('put', enableCORS)
-  .before('delete', enableCORS)
   .before('get', ensureKey)
   .before('post', ensureKey)
   .before('put', ensureKey)
@@ -152,18 +150,6 @@ function addIfMissing(req, res, next) {
 
 function ensureKey(req, res, next) {
   if(!req.query || !req.query.key) return res.send(404);
-
-  next();
-}
-
-function enableCORS(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*'); 
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-console.log(req.method);
-  if('OPTIONS' == req.method) {
-    return res.send(200);
-  }
 
   next();
 }
